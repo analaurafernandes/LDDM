@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage>{
             setState(() {
               selecionado = valor;
             });
-            print(selecionado);
+            resultado.fillRange(0, resultado.length - 1, '0');
         })
     );
   }
@@ -221,7 +221,6 @@ class _HomePageState extends State<HomePage>{
               bonus = valor;
               label = "Bônus: " + valor.toString();
             });
-            print('novo valor da conta:' + (valor_conta*(1.0 + bonus/100)).toString());
           }
       )
     );
