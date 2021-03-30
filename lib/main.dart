@@ -14,7 +14,12 @@ var grupo_sem_bebida    = 0.0;
 var valor_garcom        = 0.0;
 var valor_quem_comeu    = 0.0;
 var valor_quem_bebeu    = 0.0;
-bool selecionado        = true;
+bool selecionado        = false;
+final valor_total       = TextEditingController();
+final bebidas       = TextEditingController();
+final pessoas       = TextEditingController();
+final pessoas_bebidas       = TextEditingController();
+
 var bonus = 10.0;
 List<String> resultado = List<String>.filled(7, '0');
 String label = "Bônus:";
@@ -67,13 +72,13 @@ class _HomePageState extends State<HomePage>{
                       child: ListView(
                           children: <Widget>[
                             _labelCaixaTexto("Digite o valor da Conta:"),
-                            _caixaTexto("valor_conta"),
+                            _caixaTexto("valor_conta", valor_total),
                             _labelCaixaTexto("Digite o valor das Bebidas:"),
-                            _caixaTexto("valor_bebidas"),
+                            _caixaTexto("valor_bebidas", bebidas),
                             _labelCaixaTexto("Digite o número de pessoas que irão dividir a conta:"),
-                            _caixaTexto("num_pessoas"),
+                            _caixaTexto("num_pessoas", pessoas),
                             _labelCaixaTexto("Digite o número de pessoas que irão dividir a bebida:"),
-                            _caixaTexto("num_pessoas_beberam"),
+                            _caixaTexto("num_pessoas_beberam", pessoas_bebidas),
                             _switchBebidas(),
                             _labelCaixaTexto("Porcentagem do Garçom:"),
                             _sliderBonusConta(),
@@ -130,9 +135,9 @@ class _HomePageState extends State<HomePage>{
                       child: ListView(
                           children: <Widget>[
                             _labelCaixaTexto("Digite o valor da Conta:"),
-                            _caixaTexto("valor_conta"),
+                            _caixaTexto("valor_conta", valor_total),
                             _labelCaixaTexto("Digite o número de pessoas que irão dividir a conta:"),
-                            _caixaTexto("num_pessoas"),
+                            _caixaTexto("num_pessoas", pessoas),
                             _switchBebidas(),
                             _labelCaixaTexto("Porcentagem do Garçom:"),
                             _sliderBonusConta(),
@@ -164,11 +169,12 @@ class _HomePageState extends State<HomePage>{
                 style: TextStyle(fontSize: 16))
         ));
   }
-  _caixaTexto(variavel){
+  _caixaTexto(variavel, nomeCaixaTexto){
     return Padding(
         padding: EdgeInsets.fromLTRB(32, 0, 32, 0),
         child: TextField(
           keyboardType: TextInputType.number,
+          controller: nomeCaixaTexto,
           onChanged: (String valor){
             setState(() {
               if(variavel == "valor_conta")
@@ -180,12 +186,6 @@ class _HomePageState extends State<HomePage>{
               else
                 num_pessoas = double.parse(valor);
             });
-
-            print(variavel);
-            print(num_pessoas);
-            print(valor_conta);
-            print(valor_bebidas);
-            print(num_pessoas_beberam);
           },
         )
     );
@@ -238,12 +238,20 @@ class _HomePageState extends State<HomePage>{
                 else
                   _calculaConta();
                 setState(() {
-                  resultado = [valor_conta.toString(), valor_por_pessoa.toString(), valor_garcom.toString(), valor_quem_bebeu.toString(),
-                    valor_quem_comeu.toString(), grupo_sem_bebida.toString(), grupo_bebida.toString()];
+                  resultado = [valor_conta.toStringAsPrecision(2), valor_por_pessoa.toStringAsPrecision(2), valor_garcom.toStringAsPrecision(2), valor_quem_bebeu.toStringAsPrecision(2),
+                    valor_quem_comeu.toStringAsPrecision(2), grupo_sem_bebida.toStringAsPrecision(2), grupo_bebida.toStringAsPrecision(2)];
+                  valor_conta = valor_por_pessoa = valor_garcom = valor_quem_bebeu = valor_quem_comeu = grupo_sem_bebida = grupo_bebida = 0.0;
+                  _resetCaixasTexto();
                 });
           }
       )
     );
+  }
+  _resetCaixasTexto(){
+    valor_total.clear();
+    pessoas.clear();
+    bebidas.clear();
+    pessoas_bebidas.clear();
   }
   _calculaContaBebida(){
     valor_quem_comeu = ((valor_conta - valor_bebidas)/num_pessoas);
@@ -261,82 +269,3 @@ class _HomePageState extends State<HomePage>{
     valor_por_pessoa = (valor_conta)/num_pessoas;
   }
 }
-
-
-/*//widget inicial, retornamos um MaterialApp
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //MaterialApp definido apenas uma vez no APP inteiro
-    return MaterialApp(
-      debugShowCheckedModeBanner: false, //tira a faixa debug
-      theme: ThemeData(primaryColor: Colors.blue),
-      //Scafoold permite adicionar novos widgets do Material design nele
-      home: HomePage(),
-    );
-  }
-}
-//criar um widget customizado
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Cães Bonitinhos"),
-        centerTitle: true,
-      ), //propriedade
-      //Cria-se o layout em sim no body
-      body: _body(),
-    );
-  }
-
-  _body() {
-    return Container(
-      color: Colors.white,
-      child: Center(
-        child: _button(),
-      ),
-    );
-  }
-  _button() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            primary: Colors.purple,
-            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-            textStyle: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold)
-        ),
-        child: Text(
-          "Ok",
-          style: TextStyle(
-            color: Colors.white,
-          ) ,
-        ),
-        onPressed: () => print("Clicou no botão ok!")
-    );
-  }
-
-  _img() {
-    return Image.asset("assets/images/cao.jpeg",
-      fit: BoxFit.cover,
-    );
-  }
-
-  _text() {
-    return Text(
-      "Texto na pagina",
-      style: TextStyle(
-        color: Colors.blue,
-        fontSize: 30,
-        fontWeight: FontWeight.bold,
-        fontStyle: FontStyle.italic,
-        decoration: TextDecoration.underline,
-        decorationColor: Colors.red,
-        decorationStyle: TextDecorationStyle.dashed,
-      ),
-    );
-  }
-
-
-}*/
