@@ -1,4 +1,4 @@
-# racha_conta
+# divisor_de_contas
 
 A new Flutter application.
 
